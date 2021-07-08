@@ -2,6 +2,7 @@ package jp.co.axa.apidemo.controllers;
 
 import jp.co.axa.apidemo.entities.Employee;
 import jp.co.axa.apidemo.services.EmployeeService;
+import jp.co.axa.apidemo.services.RequestValidation;
 import jp.co.axa.apidemo.utils.RestResponse;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
@@ -14,9 +15,12 @@ public class EmployeeController {
 
     @Autowired
     private EmployeeService employeeService;
+    @Autowired
+    private RequestValidation validation;
 
-    public void setEmployeeService(EmployeeService employeeService) {
+    public void setEmployeeService(EmployeeService employeeService, RequestValidation validation) {
         this.employeeService = employeeService;
+        this.validation = validation;
     }
 
     @GetMapping("/employees")
@@ -31,6 +35,7 @@ public class EmployeeController {
 
     @PostMapping("/employees")
     public RestResponse<Boolean> saveEmployee(@RequestBody Employee employee) {
+        validation.validate(employee);
         employeeService.saveEmployee(employee);
         return new RestResponse<>(true);
     }
