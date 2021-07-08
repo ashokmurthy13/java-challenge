@@ -2,6 +2,7 @@ package jp.co.axa.apidemo.controllers;
 
 import jp.co.axa.apidemo.entities.Employee;
 import jp.co.axa.apidemo.services.EmployeeService;
+import jp.co.axa.apidemo.utils.RestResponse;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
@@ -19,35 +20,34 @@ public class EmployeeController {
     }
 
     @GetMapping("/employees")
-    public List<Employee> getEmployees() {
-        List<Employee> employees = employeeService.retrieveEmployees();
-        return employees;
+    public RestResponse<List<Employee>> getEmployees() {
+        return new RestResponse<>(employeeService.retrieveEmployees());
     }
 
     @GetMapping("/employees/{employeeId}")
-    public Employee getEmployee(@PathVariable(name = "employeeId") Long employeeId) {
-        return employeeService.getEmployee(employeeId);
+    public RestResponse<Employee> getEmployee(@PathVariable(name = "employeeId") Long employeeId) {
+        return new RestResponse<>(employeeService.getEmployee(employeeId));
     }
 
     @PostMapping("/employees")
-    public void saveEmployee(@RequestBody Employee employee) {
+    public RestResponse<Boolean> saveEmployee(@RequestBody Employee employee) {
         employeeService.saveEmployee(employee);
-        System.out.println("Employee Saved Successfully");
+        return new RestResponse<>(true);
     }
 
     @DeleteMapping("/employees/{employeeId}")
-    public void deleteEmployee(@PathVariable(name = "employeeId") Long employeeId) {
+    public RestResponse<Boolean> deleteEmployee(@PathVariable(name = "employeeId") Long employeeId) {
         employeeService.deleteEmployee(employeeId);
-        System.out.println("Employee Deleted Successfully");
+        return new RestResponse<>(true);
     }
 
     @PutMapping("/employees/{employeeId}")
-    public void updateEmployee(@RequestBody Employee employee,
-                               @PathVariable(name = "employeeId") Long employeeId) {
+    public RestResponse<Boolean> updateEmployee(@RequestBody Employee employee,
+                                                @PathVariable(name = "employeeId") Long employeeId) {
         Employee emp = employeeService.getEmployee(employeeId);
         if (emp != null) {
             employeeService.updateEmployee(employee);
         }
-
+        return new RestResponse<>(true);
     }
 }
