@@ -1,5 +1,6 @@
 package jp.co.axa.apidemo.services;
 
+import jp.co.axa.apidemo.dto.EmployeeDto;
 import jp.co.axa.apidemo.entities.Employee;
 
 import java.util.List;
@@ -11,22 +12,22 @@ public interface EmployeeService {
      *
      * @return list of employees
      */
-    List<Employee> retrieveEmployees();
+    List<EmployeeDto> retrieveEmployees();
 
     /**
      * Fetch a employee detail based on the employee id
      *
      * @param employeeId employee id
-     * @return employee detail
+     * @return employeeDto detail
      */
-    Employee getEmployee(Long employeeId);
+    EmployeeDto getEmployee(Long employeeId);
 
     /**
-     * Save employee detail to the database
+     * Save employeeDto detail to the database
      *
-     * @param employee employee details
+     * @param employeeDto employeeDto details
      */
-    void saveEmployee(Employee employee);
+    void saveEmployee(EmployeeDto employeeDto);
 
     /**
      * Delete a employee detail from database
@@ -36,9 +37,9 @@ public interface EmployeeService {
     void deleteEmployee(Long employeeId);
 
     /**
-     * Update the employee info such as name, department, salary based on the id
+     * Update the employeeDto info such as name, department, salary based on the id
      *
-     * @param employee employee details
+     * @param employeeDto employeeDto details
      */
-    void updateEmployee(Employee employee);
+    void updateEmployee(EmployeeDto employeeDto, Long employeeId);
 }

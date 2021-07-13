@@ -2,6 +2,7 @@ package jp.co.axa.apidemo.controller;
 
 import jp.co.axa.apidemo.ApiDemoApplication;
 import jp.co.axa.apidemo.controllers.EmployeeController;
+import jp.co.axa.apidemo.dto.EmployeeDto;
 import jp.co.axa.apidemo.entities.Employee;
 import jp.co.axa.apidemo.exception.APIBaseException;
 import jp.co.axa.apidemo.utils.RestResponse;
@@ -26,32 +27,32 @@ public class EmployeeControllerTest {
 
     @Before
     public void setup() {
-        Employee employee = new Employee();
-        employee.setName("Akira");
-        employee.setSalary(1000000);
-        employee.setDepartment("IT");
-        employeeController.saveEmployee(employee);
+        EmployeeDto employeeDto = new EmployeeDto();
+        employeeDto.setName("Akira");
+        employeeDto.setSalary(1000000);
+        employeeDto.setDepartment("IT");
+        employeeController.saveEmployee(employeeDto);
     }
 
     @Test
     public void testGetEmployees() {
-        RestResponse<List<Employee>> response = employeeController.getEmployees();
+        RestResponse<List<EmployeeDto>> response = employeeController.getEmployees();
         Assert.assertEquals(EXPECTED_NAME, response.getResult().get(0).getName());
     }
 
     @Test
     public void testGetEmployee() {
-        RestResponse<Employee> response = employeeController.getEmployee(1L);
+        RestResponse<EmployeeDto> response = employeeController.getEmployee(1L);
         Assert.assertEquals(EXPECTED_NAME, response.getResult().getName());
     }
 
     @Test
     public void testAddNewEmployee() {
-        Employee employee = new Employee();
-        employee.setName("Toshiro");
-        employee.setSalary(1000000);
-        employee.setDepartment("IT");
-        RestResponse<Boolean> response = employeeController.saveEmployee(employee);
+        EmployeeDto employeeDto = new EmployeeDto();
+        employeeDto.setName("Toshiro");
+        employeeDto.setSalary(1000000);
+        employeeDto.setDepartment("IT");
+        RestResponse<Boolean> response = employeeController.saveEmployee(employeeDto);
         Assert.assertTrue(response.getResult());
     }
 

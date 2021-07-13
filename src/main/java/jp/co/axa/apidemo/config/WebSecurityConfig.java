@@ -17,5 +17,8 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                 .formLogin()
                 .and()
                 .httpBasic();
+
+        // to use H2 web console
+        http.headers().frameOptions().disable();
     }
 }

@@ -1,13 +1,19 @@
 package jp.co.axa.apidemo.services;
 
+import jp.co.axa.apidemo.dto.EmployeeDto;
 import jp.co.axa.apidemo.entities.Employee;
 import jp.co.axa.apidemo.exception.APIBaseException;
 import jp.co.axa.apidemo.repositories.EmployeeRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.CachePut;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -23,22 +29,34 @@ public class EmployeeServiceImpl implements EmployeeService {
         this.employeeRepository = employeeRepository;
     }
 
-    public List<Employee> retrieveEmployees() {
+    @Cacheable(value = "employees", key = "'all'")
+    public List<EmployeeDto> retrieveEmployees() {
         List<Employee> employees = employeeRepository.findAll();
-        return employees;
+        List<EmployeeDto> employeeDtoList = new ArrayList<>();
+        employees.forEach(employee -> {
+            EmployeeDto employeeDto = new EmployeeDto();
+            BeanUtils.copyProperties(employee, employeeDto);
+            employeeDtoList.add(employeeDto);
+        });
+        return employeeDtoList;
     }
 
-    public Employee getEmployee(Long employeeId) {
+    public EmployeeDto getEmployee(Long employeeId) {
         Optional<Employee> optEmp = employeeRepository.findById(employeeId);
         if (!optEmp.isPresent()) {
             LOG.info("no records found for the employee id: {}", employeeId);
             throw new APIBaseException("no records found for the id: " + employeeId);
         }
-        return optEmp.get();
+        EmployeeDto employeeDto = new EmployeeDto();
+        BeanUtils.copyProperties(optEmp.get(), employeeDto);
+        return employeeDto;
     }
 
-    public void saveEmployee(Employee employee) {
+    @CacheEvict(value = "employees", allEntries = true)
+    public void saveEmployee(EmployeeDto employeeDto) {
         try {
+            Employee employee = new Employee();
+            BeanUtils.copyProperties(employeeDto, employee);
             employeeRepository.save(employee);
         } catch (Exception e) {
             LOG.error(e.getMessage());
@@ -46,6 +64,7 @@ public class EmployeeServiceImpl implements EmployeeService {
         }
     }
 
+    @CacheEvict(value = "employees", allEntries = true)
     public void deleteEmployee(Long employeeId) {
         try {
             employeeRepository.deleteById(employeeId);
@@ -55,7 +74,14 @@ public class EmployeeServiceImpl implements EmployeeService {
         }
     }
 
-    public void updateEmployee(Employee employee) {
-        employeeRepository.save(employee);
+    public void updateEmployee(EmployeeDto employeeDto, Long employeeId) {
+        EmployeeDto emp = getEmployee(employeeId);
+        if (employeeDto.getId() != employeeId) {
+            throw new APIBaseException("Employee id is an unique id and it cannot updated");
+        } else if (emp != null) {
+            Employee employee = new Employee();
+            BeanUtils.copyProperties(employeeDto, employee);
+            employeeRepository.save(employee);
+        }
     }
 }
