@@ -18,6 +18,12 @@
 
 - I have 8+ years experience in Java and Spring Boot
 - I have been using Spring and Spring Boot for the last 8+ years of my career
+- My Tech Stack
+  * Java, Spring Core, Spring Boot, Spring Security, Spring AOP, PostgreSQL, REST API
+  * JUnit, Mockito
+  * Apache HDFS, Apache Hive, Apache HBase, Apache Kafka
+  * Gradle, Maven, Git, BitBucket, JIRA, Bamboo Build, Agile - SCRUM
+  * Code Quality: SonarQube
 
 ### Improvements
 
